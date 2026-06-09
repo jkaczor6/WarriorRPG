@@ -14,4 +14,6 @@ class WARRIORRPG_API AWarriorRPGHeroCharacter : public AWarriorRPGBaseCharacter
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void BeginPlay();
 };
