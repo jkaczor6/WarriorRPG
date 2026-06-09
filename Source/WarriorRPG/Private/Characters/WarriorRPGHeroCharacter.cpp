@@ -7,6 +7,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "Components/Input/WarriorRPGInputComponent.h"
+#include "WarriorRPGGameplayTags.h"
+#include "DataAssets/Input/DataAsset_InputConfig.h"
 
 AWarriorRPGHeroCharacter::AWarriorRPGHeroCharacter()
 {
@@ -37,4 +41,57 @@ void AWarriorRPGHeroCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	Debug::Print("Working");
+}
+
+void AWarriorRPGHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	checkf(InputConfigDataAsset, TEXT("Input config data asset is null"));
+	
+	ULocalPlayer* LocalPlayer{ GetController<APlayerController>()->GetLocalPlayer() };
+	
+	UEnhancedInputLocalPlayerSubsystem* Subsystem{ ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer) };
+	check(Subsystem);
+	
+	Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+	
+	UWarriorRPGInputComponent* WarriorInputComponent{ CastChecked<UWarriorRPGInputComponent>(PlayerInputComponent) };
+	
+	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset, WarriorRPG::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+	WarriorInputComponent->BindNativeInputAction(InputConfigDataAsset, WarriorRPG::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
+}
+
+void AWarriorRPGHeroCharacter::Input_Move(const FInputActionValue& Value)
+{
+	const FVector2D MoveVector{ Value.Get<FVector2D>() };
+	const FRotator MoveRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+	
+	if (MoveVector.Y != 0.f)
+	{
+		const FVector ForwardDirection{ MoveRotation.RotateVector(FVector::ForwardVector) };
+		
+		AddMovementInput(ForwardDirection, MoveVector.Y);
+	}
+	
+	if (MoveVector.X != 0.f)
+	{
+		const FVector RightDirection{ MoveRotation.RotateVector(FVector::RightVector) };
+		
+		AddMovementInput(RightDirection, MoveVector.X);
+	}
+}
+
+void AWarriorRPGHeroCharacter::Input_Look(const FInputActionValue& Value)
+{
+	const FVector2D LookAxis{ Value.Get<FVector2D>() };	
+	
+	if (LookAxis.X != 0.f)
+	{
+		AddControllerYawInput(LookAxis.X);
+	}
+	if (LookAxis.Y != 0.f)
+	{
+		AddControllerPitchInput(LookAxis.Y);
+	}
 }
