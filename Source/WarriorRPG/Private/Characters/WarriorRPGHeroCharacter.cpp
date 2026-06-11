@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/Input/WarriorRPGInputComponent.h"
 #include "WarriorRPGGameplayTags.h"
+#include "AbilitySystem/WarriorRPGAbilitySystemComponent.h"
 #include "DataAssets/Input/DataAsset_InputConfig.h"
 
 AWarriorRPGHeroCharacter::AWarriorRPGHeroCharacter()
@@ -40,7 +41,18 @@ void AWarriorRPGHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Debug::Print("Working");
+}
+
+void AWarriorRPGHeroCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	if (WarriorAbilitySystemComponent && WarriorAttributeSet)
+	{
+		const FString ASCText{ FString::Printf(TEXT("Owner Actor: %s, AvatarActor: %s"), *WarriorAbilitySystemComponent->GetOwnerActor()->GetActorLabel(), *WarriorAbilitySystemComponent->GetAvatarActor()->GetActorLabel()) };
+		Debug::Print("Ability system component valid " + ASCText, FColor::Green);
+		Debug::Print("Attribute Set valid", FColor::Green);
+	}
 }
 
 void AWarriorRPGHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
