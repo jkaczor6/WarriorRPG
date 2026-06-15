@@ -38,3 +38,8 @@ UPawnCombatComponent* UWarriorRPGGameplayAbility::GetPawnCombatComponentFromActo
 {
 	return GetAvatarActorFromActorInfo()->FindComponentByClass<UPawnCombatComponent>();
 }
+
+UWarriorRPGAbilitySystemComponent* UWarriorRPGGameplayAbility::GetWarriorRPGAbilitySystemComponentFromActorInfo() const
+{
+	return Cast<UWarriorRPGAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+}
