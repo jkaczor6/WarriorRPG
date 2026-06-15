@@ -13,6 +13,8 @@
 #include "AbilitySystem/WarriorRPGAbilitySystemComponent.h"
 #include "DataAssets/Input/DataAsset_InputConfig.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
+#include "Components/Combat/HeroCombatComponent.h"
+
 
 AWarriorRPGHeroCharacter::AWarriorRPGHeroCharacter()
 {
@@ -36,6 +38,8 @@ AWarriorRPGHeroCharacter::AWarriorRPGHeroCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	
+	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>("HeroCombatComponent");
 }
 
 void AWarriorRPGHeroCharacter::BeginPlay()
