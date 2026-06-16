@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UHeroCombatComponent;
 struct FInputActionValue;
+struct FGameplayTag;
 
 UCLASS()
 class WARRIORRPG_API AWarriorRPGHeroCharacter : public AWarriorRPGBaseCharacter
@@ -44,6 +45,9 @@ private:
 	
 	void Input_Move(const FInputActionValue& Value);
 	void Input_Look(const FInputActionValue& Value);
+	
+	void Input_AbilityInputPressed(FGameplayTag InInputTag);
+	void Input_AbilityInputReleased(FGameplayTag InInputTag);
 #pragma endregion
 	
 public:
